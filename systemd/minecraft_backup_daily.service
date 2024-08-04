@@ -1,0 +1,9 @@
+[Unit]
+Description=Save one of the hourly backups each day
+
+[Service]
+Type=oneshot
+User=minecraft
+Group=minecraft
+EnvironmentFile=/etc/minecraft/env.conf
+ExecStart=/usr/bin/sh /opt/minecraft/scripts/backup_daily.sh

@@ -1,0 +1,9 @@
+[Unit]
+Description=Restart the Minecraft server daily at 10:10 UTC (04:10 CST, 05:10 CDT)
+
+[Timer]
+OnCalendar=*-*-* 10:09:00
+Persistent=false
+
+[Install]
+WantedBy=timers.target

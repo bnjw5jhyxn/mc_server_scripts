@@ -1,0 +1,14 @@
+#!/usr/bin/sh
+
+. /etc/minecraft/env.conf
+
+if systemctl is-active minecraft.service
+then
+	echo "error: Minecraft server is running"
+	exit 1
+fi
+
+readonly backup_path=$(realpath $1)
+cd $MINECRAFT_DIR
+sudo -u minecraft rm --force --verbose --recursive world
+sudo -u minecraft tar xzvf $backup_path

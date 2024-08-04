@@ -1,0 +1,28 @@
+#!/usr/bin/sh
+
+. /etc/minecraft/env.conf
+
+readonly VERSION_MANIFEST_URL=https://piston-meta.mojang.com/mc/game/version_manifest.json
+
+if systemctl is-active minecraft.service
+then
+	echo "error: Minecraft server is running"
+	exit 1
+fi
+
+cd $MINECRAFT_DIR
+sudo -u minecraft rm --force server.jar fabric-server-mc.*-loader.*-launcher.*.jar
+curl https://meta.fabricmc.net/v2/versions/loader/$MINECRAFT_VER/$FABRIC_LOADER_VER/$FABRIC_INSTALLER_VER/server/jar | \
+	sudo -u minecraft tee fabric-server-mc.$MINECRAFT_VER-loader.$FABRIC_LOADER_VER-launcher.$FABRIC_INSTALLER_VER.jar > /dev/null
+
+#curl $VERSION_MANIFEST_URL | \
+#	jq --raw-output ".versions | .[] | select(.id == \"$1\") | .url" | \
+#	xargs -I {} curl -- {} | \
+#	jq --raw-output '.downloads.server.url' | \
+#	xargs -I {} curl -- {} | \
+#	sudo -u minecraft tee server.jar > /dev/null
+
+cd $MINECRAFT_DIR/mods
+sudo -u minecraft rm --force lithium-fabric-mc*-*.jar
+curl --location https://github.com/CaffeineMC/lithium-fabric/releases/download/mc$MINECRAFT_VER-$LITHIUM_VER/lithium-fabric-mc$MINECRAFT_VER-$LITHIUM_VER.jar | \
+	sudo -u minecraft tee lithium-fabric-mc$MINECRAFT_VER-$LITHIUM_VER.jar > /dev/null
